@@ -1,0 +1,313 @@
+[
+    {
+        "id": "49c7cf18.865b5",
+        "type": "tab",
+        "label": "Exercicio 4 e 5"
+    },
+    {
+        "id": "d3738051.3a6ed",
+        "type": "tab",
+        "label": "Testes Exercicios 4 e 5"
+    },
+    {
+        "id": "876e81f0.19e7f",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "10.20.92.51",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "a4256cd.e9ace9",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "COM3",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": false
+    },
+    {
+        "id": "1be11533.380afb",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "5b557955.f4ab38",
+        "type": "mqtt in",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "topic": "fiap/aluno/nota",
+        "qos": "2",
+        "broker": "876e81f0.19e7f",
+        "x": 132,
+        "y": 104,
+        "wires": [
+            [
+                "ee56bcd5.334bd"
+            ]
+        ]
+    },
+    {
+        "id": "ee56bcd5.334bd",
+        "type": "change",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "nota",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 384,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a0455562.42bd78",
+        "type": "http in",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "url": "/nota",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 106,
+        "y": 229,
+        "wires": [
+            [
+                "43191995.bbc538"
+            ]
+        ]
+    },
+    {
+        "id": "d293b788.17e098",
+        "type": "http response",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "x": 654,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "43191995.bbc538",
+        "type": "function",
+        "z": "49c7cf18.865b5",
+        "name": "Pega nota do flow e cria JSON de resposta",
+        "func": "var obj = JSON.parse(flow.get(\"nota\"))\nif(\"nota\" in obj) {\n    var valor = obj.nota\n    msg.payload = {\"value\": valor}\n    msg.statusCode = 200;\n    msg.headers = {\"Content-Type\": \"application/json\"}\n} else {\n    msg.statusCode = 500\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 388,
+        "y": 270,
+        "wires": [
+            [
+                "d293b788.17e098"
+            ]
+        ]
+    },
+    {
+        "id": "b482625b.6583c",
+        "type": "inject",
+        "z": "d3738051.3a6ed",
+        "name": "",
+        "topic": "",
+        "payload": "{\"nota\": 8.3}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 127,
+        "y": 66,
+        "wires": [
+            [
+                "95eb877a.8cf648"
+            ]
+        ]
+    },
+    {
+        "id": "95eb877a.8cf648",
+        "type": "mqtt out",
+        "z": "d3738051.3a6ed",
+        "name": "",
+        "topic": "fiap/aluno/nota",
+        "qos": "1",
+        "retain": "false",
+        "broker": "876e81f0.19e7f",
+        "x": 605,
+        "y": 66,
+        "wires": []
+    },
+    {
+        "id": "c8df93ef.bc595",
+        "type": "comment",
+        "z": "49c7cf18.865b5",
+        "name": "para testar trocar o IP pelo localhost",
+        "info": "",
+        "x": 191,
+        "y": 62,
+        "wires": []
+    },
+    {
+        "id": "d99e8379.9057a",
+        "type": "http in",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "url": "/info/professor",
+        "method": "put",
+        "swaggerDoc": "",
+        "x": 133,
+        "y": 403,
+        "wires": [
+            [
+                "35b82b27.83d024"
+            ]
+        ]
+    },
+    {
+        "id": "d78cc4b7.e04df8",
+        "type": "mqtt out",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "topic": "fiap/aluno/info",
+        "qos": "1",
+        "retain": "false",
+        "broker": "876e81f0.19e7f",
+        "x": 660,
+        "y": 402,
+        "wires": []
+    },
+    {
+        "id": "35b82b27.83d024",
+        "type": "function",
+        "z": "49c7cf18.865b5",
+        "name": "Recebe JSON e cria outro",
+        "func": "var obj = msg.payload\nif(\"faltas\" in obj) {\n    var info = obj.faltas\n    msg.statusCode = 200\n    msg.payload = {\"info\": info}\n}\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 253,
+        "y": 492,
+        "wires": [
+            [
+                "448809ee.124348",
+                "bad10239.b1f36"
+            ]
+        ]
+    },
+    {
+        "id": "448809ee.124348",
+        "type": "http response",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "x": 479,
+        "y": 581,
+        "wires": []
+    },
+    {
+        "id": "bad10239.b1f36",
+        "type": "switch",
+        "z": "49c7cf18.865b5",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 472,
+        "y": 403,
+        "wires": [
+            [
+                "d78cc4b7.e04df8"
+            ]
+        ]
+    },
+    {
+        "id": "c8cd033f.89c81",
+        "type": "mqtt in",
+        "z": "d3738051.3a6ed",
+        "name": "",
+        "topic": "fiap/aluno/info",
+        "qos": "2",
+        "broker": "876e81f0.19e7f",
+        "x": 110,
+        "y": 193,
+        "wires": [
+            [
+                "fd7d2931.ecfba8"
+            ]
+        ]
+    },
+    {
+        "id": "fd7d2931.ecfba8",
+        "type": "debug",
+        "z": "d3738051.3a6ed",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 592,
+        "y": 191,
+        "wires": []
+    },
+    {
+        "id": "faab0dda.0515b",
+        "type": "comment",
+        "z": "49c7cf18.865b5",
+        "name": "para testar trocar o IP pelo localhost",
+        "info": "",
+        "x": 599,
+        "y": 364,
+        "wires": []
+    },
+    {
+        "id": "b04ea674.e03868",
+        "type": "comment",
+        "z": "49c7cf18.865b5",
+        "name": "http://localhost:1880/nota ",
+        "info": "",
+        "x": 156,
+        "y": 189,
+        "wires": []
+    }
+]

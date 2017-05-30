@@ -1,0 +1,602 @@
+[
+    {
+        "id": "3d25fccb.a91b24",
+        "type": "tab",
+        "label": "Gateway MQTT -> Arduino"
+    },
+    {
+        "id": "c25b23f7.359e1",
+        "type": "tab",
+        "label": "API MQTT/HTTP"
+    },
+    {
+        "id": "a54ef6a.dec8d08",
+        "type": "tab",
+        "label": "Cliente HTTP"
+    },
+    {
+        "id": "14cde677.29505a",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "COM3",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": false
+    },
+    {
+        "id": "99ad8357.738cd",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "10.3.2.41",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "9266fbf7.f3e8b8",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "COM3",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": false
+    },
+    {
+        "id": "4f349501.aabfcc",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "66b32727.c31408",
+        "type": "serial-port",
+        "z": "",
+        "serialport": "COM3",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": false
+    },
+    {
+        "id": "ae779b18.aba8c8",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "59fbd9cf.5787c8",
+        "type": "mqtt in",
+        "z": "3d25fccb.a91b24",
+        "name": "",
+        "topic": "fiap/lab902/arduino23/led",
+        "qos": "1",
+        "broker": "4f349501.aabfcc",
+        "x": 133,
+        "y": 276,
+        "wires": [
+            [
+                "6f7bbada.71b844"
+            ]
+        ]
+    },
+    {
+        "id": "a79df4e9.f38a78",
+        "type": "inject",
+        "z": "3d25fccb.a91b24",
+        "name": "",
+        "topic": "",
+        "payload": "{\"luz\": 59}",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 111,
+        "y": 109,
+        "wires": [
+            [
+                "d7d55eb7.25ec4"
+            ]
+        ]
+    },
+    {
+        "id": "34169fac.3de62",
+        "type": "mqtt out",
+        "z": "3d25fccb.a91b24",
+        "name": "",
+        "topic": "fiap/lab902/arduino23/luz",
+        "qos": "2",
+        "retain": "false",
+        "broker": "4f349501.aabfcc",
+        "x": 635,
+        "y": 108,
+        "wires": []
+    },
+    {
+        "id": "d7d55eb7.25ec4",
+        "type": "function",
+        "z": "3d25fccb.a91b24",
+        "name": "Formata Inteiro",
+        "func": "var obj = JSON.parse(msg.payload.trim())\nif(\"luz\" in obj) {\n    msg.payload = obj.luz\n} else {\n    msg.payload = null\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 362,
+        "y": 108,
+        "wires": [
+            [
+                "34169fac.3de62"
+            ]
+        ]
+    },
+    {
+        "id": "2e769f1c.3bf05",
+        "type": "comment",
+        "z": "3d25fccb.a91b24",
+        "name": "Recebe do arduino (cabo serial) -> envia para uma API MQTT ",
+        "info": "",
+        "x": 348,
+        "y": 65,
+        "wires": []
+    },
+    {
+        "id": "6f7bbada.71b844",
+        "type": "function",
+        "z": "3d25fccb.a91b24",
+        "name": "Formata JSON",
+        "func": "msg.payload = {\"led\":parseInt(msg.payload)}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 369,
+        "y": 276,
+        "wires": [
+            [
+                "296deff7.61059"
+            ]
+        ]
+    },
+    {
+        "id": "296deff7.61059",
+        "type": "debug",
+        "z": "3d25fccb.a91b24",
+        "name": "API enviou para arduino",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 616,
+        "y": 275,
+        "wires": []
+    },
+    {
+        "id": "296336e3.00473a",
+        "type": "comment",
+        "z": "3d25fccb.a91b24",
+        "name": "Recebe por MQTT -> envia para arduino (cabo serial)",
+        "info": "",
+        "x": 360,
+        "y": 230,
+        "wires": []
+    },
+    {
+        "id": "c7647612.a7a9c8",
+        "type": "mqtt in",
+        "z": "c25b23f7.359e1",
+        "name": "",
+        "topic": "fiap/lab902/arduino23/luz",
+        "qos": "2",
+        "broker": "4f349501.aabfcc",
+        "x": 122,
+        "y": 143,
+        "wires": [
+            [
+                "a68680d3.530b9"
+            ]
+        ]
+    },
+    {
+        "id": "5b9f3f41.bdb3b",
+        "type": "comment",
+        "z": "c25b23f7.359e1",
+        "name": "http://localhost:1880/luz",
+        "info": "",
+        "x": 110,
+        "y": 395,
+        "wires": []
+    },
+    {
+        "id": "a68680d3.530b9",
+        "type": "change",
+        "z": "c25b23f7.359e1",
+        "name": "Coloca luz no context (objeto flow)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "luz",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 607,
+        "y": 143,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c15ee59d.139a28",
+        "type": "http in",
+        "z": "c25b23f7.359e1",
+        "name": "",
+        "url": "/luz",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 71,
+        "y": 359,
+        "wires": [
+            [
+                "f8a7af19.1e243"
+            ]
+        ]
+    },
+    {
+        "id": "28b350d2.be873",
+        "type": "http response",
+        "z": "c25b23f7.359e1",
+        "name": "",
+        "x": 579,
+        "y": 359,
+        "wires": []
+    },
+    {
+        "id": "f8a7af19.1e243",
+        "type": "function",
+        "z": "c25b23f7.359e1",
+        "name": "Formata saída",
+        "func": "msg.headers = {\"Content-Type\": \"application/json\"};\nmsg.payload = {\"value\": parseInt(flow.get(\"luz\"))};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 340,
+        "y": 359,
+        "wires": [
+            [
+                "28b350d2.be873"
+            ]
+        ]
+    },
+    {
+        "id": "8bedd0f9.8d1c",
+        "type": "http request",
+        "z": "a54ef6a.dec8d08",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "url": "localhost:1880/luz",
+        "tls": "",
+        "x": 362,
+        "y": 85,
+        "wires": [
+            [
+                "f7b8b8d6.c749f8"
+            ]
+        ]
+    },
+    {
+        "id": "f7b8b8d6.c749f8",
+        "type": "debug",
+        "z": "a54ef6a.dec8d08",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 558,
+        "y": 125,
+        "wires": []
+    },
+    {
+        "id": "a1264b2.0abf8b8",
+        "type": "http in",
+        "z": "c25b23f7.359e1",
+        "name": "",
+        "url": "/led",
+        "method": "put",
+        "swaggerDoc": "",
+        "x": 72,
+        "y": 586,
+        "wires": [
+            [
+                "8079bda3.c33b7"
+            ]
+        ]
+    },
+    {
+        "id": "b0b34f88.96302",
+        "type": "mqtt out",
+        "z": "c25b23f7.359e1",
+        "name": "",
+        "topic": "fiap/lab902/arduino23/led",
+        "qos": "1",
+        "retain": "true",
+        "broker": "4f349501.aabfcc",
+        "x": 642,
+        "y": 582,
+        "wires": []
+    },
+    {
+        "id": "1802aca.195ec53",
+        "type": "http response",
+        "z": "c25b23f7.359e1",
+        "name": "",
+        "x": 580,
+        "y": 691,
+        "wires": []
+    },
+    {
+        "id": "8079bda3.c33b7",
+        "type": "function",
+        "z": "c25b23f7.359e1",
+        "name": "Cria Response",
+        "func": "if(\"value\" in msg.payload) {\n    msg.payload = msg.payload.value;\n    msg.statusCode = 200;\n} else {\n    msg.statusCode = 400;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 257,
+        "y": 691,
+        "wires": [
+            [
+                "1802aca.195ec53",
+                "72ebe41b.370d1c"
+            ]
+        ]
+    },
+    {
+        "id": "72ebe41b.370d1c",
+        "type": "switch",
+        "z": "c25b23f7.359e1",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 443,
+        "y": 582,
+        "wires": [
+            [
+                "b0b34f88.96302"
+            ]
+        ]
+    },
+    {
+        "id": "20adb457.31ad7c",
+        "type": "http request",
+        "z": "a54ef6a.dec8d08",
+        "name": "",
+        "method": "PUT",
+        "ret": "txt",
+        "url": "localhost:1880/led",
+        "tls": "",
+        "x": 367,
+        "y": 308,
+        "wires": [
+            [
+                "a8860262.8883"
+            ]
+        ]
+    },
+    {
+        "id": "f6e54173.b88a1",
+        "type": "inject",
+        "z": "a54ef6a.dec8d08",
+        "name": "",
+        "topic": "",
+        "payload": "{\"value\":150}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 114,
+        "y": 308,
+        "wires": [
+            [
+                "20adb457.31ad7c"
+            ]
+        ]
+    },
+    {
+        "id": "6070b158.d3714",
+        "type": "inject",
+        "z": "a54ef6a.dec8d08",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 91,
+        "y": 85,
+        "wires": [
+            [
+                "8bedd0f9.8d1c"
+            ]
+        ]
+    },
+    {
+        "id": "b0d54173.da8d8",
+        "type": "comment",
+        "z": "c25b23f7.359e1",
+        "name": "http://localhost:1880/led",
+        "info": "JSON:\n{\"value\":123}",
+        "x": 122,
+        "y": 621,
+        "wires": []
+    },
+    {
+        "id": "7f8c17bb.1ed138",
+        "type": "comment",
+        "z": "c25b23f7.359e1",
+        "name": "Recebe via MQTT valor do led e armazena no context, no objeto flow",
+        "info": "",
+        "x": 370,
+        "y": 93,
+        "wires": []
+    },
+    {
+        "id": "89445897.de4858",
+        "type": "comment",
+        "z": "c25b23f7.359e1",
+        "name": "usa Mosquitto",
+        "info": "",
+        "x": 79,
+        "y": 194,
+        "wires": []
+    },
+    {
+        "id": "ff58e5eb.84e258",
+        "type": "comment",
+        "z": "c25b23f7.359e1",
+        "name": "usa Mosquitto",
+        "info": "",
+        "x": 681,
+        "y": 623,
+        "wires": []
+    },
+    {
+        "id": "2ebcd68e.49cf5a",
+        "type": "comment",
+        "z": "3d25fccb.a91b24",
+        "name": "usa Mosquitto",
+        "info": "",
+        "x": 674,
+        "y": 155,
+        "wires": []
+    },
+    {
+        "id": "80a5c69d.9e7b68",
+        "type": "comment",
+        "z": "3d25fccb.a91b24",
+        "name": "usa Mosquitto",
+        "info": "",
+        "x": 91,
+        "y": 325,
+        "wires": []
+    },
+    {
+        "id": "43d4bc21.73f8d4",
+        "type": "comment",
+        "z": "a54ef6a.dec8d08",
+        "name": "Request GET HTTP para API | Recebe valor do led",
+        "info": "Recebe o valor do led",
+        "x": 372,
+        "y": 39,
+        "wires": []
+    },
+    {
+        "id": "6933fdaf.57cb54",
+        "type": "comment",
+        "z": "a54ef6a.dec8d08",
+        "name": "Request PUT para API | Envia valor para o led",
+        "info": "",
+        "x": 361,
+        "y": 258,
+        "wires": []
+    },
+    {
+        "id": "19358394.c78b8c",
+        "type": "comment",
+        "z": "c25b23f7.359e1",
+        "name": "Recebe requisicao e cria response com o valor do Led",
+        "info": "",
+        "x": 315,
+        "y": 311,
+        "wires": []
+    },
+    {
+        "id": "aafcb0aa.7f5e3",
+        "type": "comment",
+        "z": "c25b23f7.359e1",
+        "name": "Recebe requisicao, cria response e se for OK 200 envia valor para Led",
+        "info": "",
+        "x": 355,
+        "y": 536,
+        "wires": []
+    },
+    {
+        "id": "e47cd829.6d2028",
+        "type": "comment",
+        "z": "a54ef6a.dec8d08",
+        "name": "imprime no console valor do Led, recebido na response",
+        "info": "",
+        "x": 518,
+        "y": 159,
+        "wires": []
+    },
+    {
+        "id": "a8860262.8883",
+        "type": "debug",
+        "z": "a54ef6a.dec8d08",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "statusCode",
+        "x": 615,
+        "y": 307,
+        "wires": []
+    }
+]
